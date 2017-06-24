@@ -1,0 +1,8 @@
+{
+  "name": "heroku-connect-node-app",
+  "description": "A barebones heroku-connect app",
+  "repository": "https://github.com/ashishnarkhede90/heroku-connect-node-app",
+  "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
+  "keywords": ["node", "express", "heroku", "postgres"],
+  "image": "heroku/nodejs"
+}
