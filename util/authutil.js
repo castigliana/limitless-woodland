@@ -2,7 +2,6 @@ var pgp = require('pg-promise')();
 var postgres = require('../lib/postgres.js');
 var jwt = require('jsonwebtoken');
 
-
 /**
 * Created By: Ashish N
 * Date: May 15, 2017
@@ -12,22 +11,38 @@ var createToken = function(user) {
 	console.log('*** createToken');
 	// create token if user is found and password is right
 	var signingSecret = process.env.SIGNING_SECRET;
+	var tokenExpiresIn = process.env.TOKEN_EXPIRES_IN ? process.env.TOKEN_EXPIRES_IN : 300;
+	console.log('tokenExpiresIn: ' + tokenExpiresIn);
 	var token = jwt.sign(user, signingSecret, {
-		expiresIn: 300 // token expiry in seconds
+		expiresIn: parseInt(tokenExpiresIn) // token expiry in seconds
 	});
-
 	return token;
 }
 
 /**
 * Created By: Ashish N
 * Date: May 15, 2017
-* Descrition: Method to check if user is authenticated
+* Descrition: Method to check if user is authenticated in the app
 */
 var isAuthenticated = function(req, res, next) {
 	console.log('*** isAuthenticated');
+
+	validateRequest(req, res, false, function(decoded) {
+		if(decoded) {
+			next();
+		}
+	});
+}
+
+/**
+* Created By: Ashish N
+* Date: May 15, 2017
+* Descrition: Method to check if user is authorized to access the Apis
+*/
+var isAuthorized = function(req, res, next) {
+	console.log('*** isAuthenticated');
 	
-	validateRequest(req, res, function(decoded) {
+	validateRequest(req, res, true, function(decoded) {
 		if(decoded) {
 			next();
 		}
@@ -40,22 +55,41 @@ var isAuthenticated = function(req, res, next) {
 * Date: May 15, 2017
 * Descrition: Method to validate request using token (if provided) in the request
 */
-var validateRequest = function(req, res, callback) {
-	console.log('*** validateRequest');
-	// find the token which was provided as part of authetication in the request body, query or headers
-	var token = req.body.token || req.query.token || req.headers.authorization;
-	// check if the token exists in the cookie. This is for the first time this API is loaded on login
-	if(!token) {
+var validateRequest = function(req, res, checkApiAccess, callback) {
+	console.log('*** validateRequest: ' + checkApiAccess);
+	
+	var token;
+	// check if the token exists in the cookie. This is for the first time this API is loaded on login. This is not used to check if user has api access
+	if(!checkApiAccess) {
+		console.log('Checking cookie');
 		token = req.cookies.accessToken;
+	}
+	// find the token which was provided as part of authetication in the request body, query or headers
+	else {
+		console.log('Checking API access');
+		token = req.body.token || req.headers.authorization;
 	} 
 
+	// if token is not found in the headers or body, fallback to cookie
+	if(checkApiAccess && (!token || (typeof token === 'string' && token == 'null'))) {
+		token = req.cookies.accessToken;
+	}
+	console.log(token);
 	// decode token
 	if (token) {
-		
 		// verifies secret and checks exp
 		jwt.verify(token, process.env.SIGNING_SECRET, function(err, decoded) {      
 		  if (err) {
-		    return res.json({ success: false, message: 'Failed to authenticate token.', error: err });    
+		  	console.log(err);
+		  	if(err.name == 'TokenExpiredError') {
+		  		console.log('Token expired');
+		  		//res.json({'status': 403, 'success': false, 'message': 'Failed to authenticate token', 'reason': 'TokenExpired'});
+		  		res.render('signin', { title: 'Sign In' });
+		  	}
+		  	else {
+				return res.json({ success: false, message: 'Failed to authenticate token.', error: err });    		  		
+		  	}
+		    
 		  } 
 		  else {
 		  	console.log('Authentication successful.');
@@ -65,22 +99,24 @@ var validateRequest = function(req, res, callback) {
 		  }
 		});
 
-	} else {
-
-		// if there is no token
-		// return an error
-		/*return res.status(403).send({ 
-		    success: false, 
-		    message: 'No token provided.' 
-		});*/
-		console.log('No token provided');
-		// render the login page if no token is provided by the client
-		res.render('signin', { title: 'Sign In' });
+	}
+	// if token is not provided in the request 
+	else {
+		// if api authorization is being checked
+		if(checkApiAccess) {
+			console.log('No token provided');
+			res.json({'status': 403, 'success': false, 'message': 'No token provided', 'reason':'MissingToken'});
+		}
+		else {
+			// render the login page if no token is provided by the client
+			res.render('signin', { title: 'Sign In' });
+		}
 	}
 }
 
 module.exports = {
 	isAuthenticated: isAuthenticated,
+	isAuthorized: isAuthorized,
 	validateRequest: validateRequest,
 	createToken: createToken
 };

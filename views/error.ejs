@@ -1,3 +1,41 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel="icon" href="/favicon.ico?v=1.1">  
+    <style>
+        body {
+            background-color: #3e3e3e
+        }
+
+        body h2 {
+            color: orange;
+        }
+
+        .errorContainer {
+            border: 1px solid black;
+            border-top: 3px solid orange;
+            position: absolute;
+            top:0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            width: 600px;
+            height: 100px;
+            background-color: white;
+            text-align: center;
+            font-family: sans-serif;
+        }
+         
+    </style>
+        
+</head>
+    <body>
+        <div class="errorContainer">
+            <h3><%= message %></h3>
+        </div>
+    </body>
+</html>
+
+

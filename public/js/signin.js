@@ -18,7 +18,7 @@ $(function(window) {
             // using the done promise callback
             .done(function(response) {
                 if(response.success) {
-                	alert('Login successful');
+                	
                 	console.log(response);
                 	// store the token in localstorage/cookie
 					 if (typeof(Storage) == "undefined" ) {
@@ -27,6 +27,8 @@ $(function(window) {
 					    else {
 					        console.log("Both localStorage and sessionStorage support is there.");
 					    }
+                    console.log(response.token);
+                    alert('Login successful');
                 	// save the access token in the session storage for use in following requests
                 	sessionStorage.setItem('accessToken', response.token);
 

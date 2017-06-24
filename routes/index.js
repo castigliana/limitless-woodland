@@ -11,6 +11,17 @@ router.get('/', authutil.isAuthenticated, function(req, res, next) {
   //res.json({success: true});
 });
 
+router.get('/speakers', authutil.isAuthenticated, function(req, res, next) {
+	res.render('speakers', { title: 'Approved Speakers' });
+  //res.json({success: true});
+});
+
+
+// Error page
+router.get('/error', authutil.isAuthenticated, function(req, res, next) {
+	res.render('error', { title: 'Error', message: 'You do not have permission to access the requested resources. Please contact the administrator.' });
+});
+
 // route to authenticate users
 router.post('/authenticate', function(req, res, next) {
 	
@@ -34,7 +45,9 @@ router.post('/authenticate', function(req, res, next) {
 				var token = authutil.createToken(user);
 				// set cookie in the response, this cookie will be used to authorize the first request to the app after login
 				// it will not (in any way) be used to authenticate a user
-				res.cookie('accessToken', token, { maxAge: 300000 });
+				var cookieMaxAge = process.env.COOKIE_EXPIRES_IN ? process.env.COOKIE_EXPIRES_IN : 300000;
+				console.log('cookieMaxAge: ' + cookieMaxAge);
+				res.cookie('accessToken', token, { maxAge: parseInt(cookieMaxAge), httpOnly: true }); // maxAge is in millisecs
 				// return json object along with token
 				res.json({
 					success: true,

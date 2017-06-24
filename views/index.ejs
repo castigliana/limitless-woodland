@@ -6,24 +6,52 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
     <script src="js/jsGridLeads.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" ></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" />
+    <link rel="icon" href="/favicon.ico?v=1.1">  
+
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css' />
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css' />
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel='stylesheet' href='/stylesheets/style.css' /> 
 
   
   </head>
   <body>
     <h2><%= title %></h2>
 
+    <div class="speakerList">
+      <a href="/speakers" target="_blank">
+        <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+        Approved Speakers
+      </a>
+    </div>
+
     <div id="jsGrid" style="margin-bottom: 2em"></div>    
+
+    <!-- Modal -->
+    <div class="modal fade" id="status-modal" role="dialog">
+      <div class="modal-dialog modal-sm">  
+        <!-- Modal content-->
+        <div class="status-modal-content modal-content">
+          <div class="status-modal-header modal-header btn-success">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+          </div>
+          <div class="modal-body">
+            <p>Saved!</p>
+          </div>
+        </div>
+        
+      </div>
+    </div>
 
     <div class="btnDiv">
       <button type="button" class="btn btn-warning" id="btnUpdate">Update</button>  
-      <!-- <button type="button" class="btn btn-primary" id="btnUpdate">Cancel</button>  -->
+        <!-- <button type="button" class="btn btn-info" data-toggle="modal" data-target="#status-modal">Open Modal</button> -->
     </div>
+    
     
   </body>
 </html>
