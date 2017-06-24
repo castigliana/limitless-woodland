@@ -17,7 +17,7 @@ var findLeads = function(leadName, cb) {
 		whereClause = " AND Name LIKE '" + leadName + "%'"
 		findQuery += whereClause;
 	}
-	findQuery += ' Order By createddate' 
+	findQuery += ' Order By createddate DESC' 
 	console.log('*** findQuery: ' + findQuery);
 	// query the records from the table
 	postgres.client.query(findQuery, { status: null, oppType: 'Speaker', isConverted: null, isConvertedBoolean: false})
