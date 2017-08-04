@@ -140,8 +140,9 @@ $(function() {
     }
 
 
-    function getLeads() {
+    function getLeads(filter) {
         console.log('*** getLeads');
+        console.log(filter);
          // create a deferred object, resolve it once data receieved from server is formatted 
          var d = $.Deferred();
 
@@ -152,7 +153,25 @@ $(function() {
                 success: function(response, status) {
                     if(response.success && response.status == 200) {
                         var leadsToApprove = mapIncomingLeadColumns(response.data);
-                        d.resolve(leadsToApprove);
+                        var filterdLeads = [];
+                        
+                        // filter the records if filter value is specified
+                        if(filter.Name) {
+                            for(var i=0; i<leadsToApprove.length; i++) {
+                                var leadName = leadsToApprove[i].Name.toLowerCase();
+                                var searchKey = filter.Name.toLowerCase();
+
+                                if( leadName.indexOf(searchKey) > -1 ) {
+                                    filterdLeads.push(leadsToApprove[i]);
+                                }
+                            }
+
+                            d.resolve(filterdLeads);
+                        }
+                        else {
+                            console.log(filterdLeads);
+                            d.resolve(leadsToApprove); 
+                        }
                     }
                     else if(!response.success && response.status == 403) {
                         $(location).attr('href', '/error');
@@ -170,8 +189,8 @@ $(function() {
     // controller function for jsGrid
     var db = {
         // make AJAX call to load lead records from the database
-        loadData: function() {
-            return getLeads();
+        loadData: function(filter) {
+            return getLeads(filter);
         },
 
         // collect items to update in an array and update them later on Update button click
@@ -189,7 +208,7 @@ $(function() {
    var config = $('#jsGrid').jsGrid({
        // height: "70%",
         width: "100%",
-        //filtering: true,
+        filtering: true,
         sorting: true,
         editing: true,
         paging: true,
@@ -211,14 +230,14 @@ $(function() {
                 align: "center",
                 width: 20
             }, */
-            { name: 'Send Invitation', type: "checkbox", align: "center", width: 30 },
-            { name: 'Title', type: "text", align: "center", width: 30 },
-            { name: "Name", type: "text", width: 50, readOnly: true },
-            { name: "Company", type: "text", width: 80, readOnly: true },
-            { name: 'Description', type: "textarea", align: "center", width: 140 },
-            { name: "Approval Status", type: "select", width: 40, items: approvalStatus, valueField: "Id", textField: "Name" },
-            { name: "Tier", type: "select", width: 40, items: tier, valueField: "Id", textField: "Name" },
-            { name: "Save/Cancel", type: "control", deleteButton: false, editButton: true, width: 40 }
+            { name: 'Send Invitation', type: "checkbox", align: "center", width: 30, filtering: false },
+            { name: "Name", autosearch: true, type: "text", width: 50, readOnly: false, filtering: true },
+            { name: 'Title', type: "text", align: "center", width: 30, filtering: false },
+            { name: "Company", type: "text", width: 80, readOnly: true, filtering: false },
+            { name: 'Description', type: "textarea", align: "center", width: 140, filtering: false },
+            { name: "Approval Status", type: "select", width: 40, items: approvalStatus, valueField: "Id", textField: "Name", filtering: false },
+            { name: "Tier", type: "select", width: 40, items: tier, valueField: "Id", textField: "Name", filtering: false },
+            { name: "Save/Cancel", type: "control", deleteButton: false, editButton: true, width: 40, filtering: false }
         ]
     });
 });
