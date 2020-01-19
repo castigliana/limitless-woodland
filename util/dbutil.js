@@ -12,15 +12,17 @@ var findLeads = function(leadName, cb) {
 	var whereClause;
 
 	var tableName = process.env.LEAD_TABLE_NAME ? process.env.LEAD_TABLE_NAME : 'Lead';
-	var findQuery = "Select * From " + tableName + ' where approval_status__c is ${status} AND expected_opportunity_type__c = ${oppType} AND (isconverted is ${isConverted} OR isconverted = ${isConvertedBoolean})';
+	//var findQuery = "Select * From " + tableName + ' where approval_status__c is ${status} AND expected_opportunity_type__c = ${oppType} AND (isconverted is ${isConverted} OR isconverted = ${isConvertedBoolean})';
+	var findQuery = "Select * From " + tableName + ' where approval_status__c is ${status} AND expected_opportunity_type__c IN ${oppType} AND (isconverted is ${isConverted} OR isconverted = ${isConvertedBoolean})';
 	if(leadName != null){
-		whereClause = " AND Name LIKE '" + leadName + "%'"
+		whereClause = " AND Name LIKE '" + leadName + "%' AND Id in (Select LeadId from CampaignMember where Campaign.Name = 'World Culture Festival V' AND LeadId != null)" 
 		findQuery += whereClause;
 	}
 	findQuery += ' Order By createddate DESC' 
 	console.log('*** findQuery: ' + findQuery);
 	// query the records from the table
-	postgres.client.query(findQuery, { status: null, oppType: 'Speaker', isConverted: null, isConvertedBoolean: false})
+	//postgres.client.query(findQuery, { status: null, oppType: 'Speaker', isConverted: null, isConvertedBoolean: false})
+	postgres.client.query(findQuery, { status: null, oppType: "('WCF Speaker', 'GLF Speaker', 'Celebrity Performer')", isConverted: null, isConvertedBoolean: false})
 	.then(data => {
 		if(cb) {
 			cb(data, null);
