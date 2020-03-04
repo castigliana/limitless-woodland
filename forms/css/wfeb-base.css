@@ -455,6 +455,34 @@ body {
     position: relative;
     width: 960px;
 }
+#pbLvyU0uPfXAhafy8AeHGJ7Qp989yAUZ {
+    background-attachment: fixed;
+    background-color: #ffffff;
+    background-image: url("//worldculturefest.org/wp-content/uploads/2020/01/wfeb-background.jpg");
+    background-position: center top;
+    background-repeat: no-repeat;
+    border-color: currentcolor;
+    border-style: none;
+    border-width: 0;
+    display: block;
+    position: relative;
+}
+#pbLvyU0uPfXAhafy8AeHGJ7Qp989yAUZ > .row .container {
+    background-color: transparent;
+    background-image: none;
+}
+#pbLvyU0uPfXAhafy8AeHGJ7Qp989yAUZ > .row .container {
+    border-radius: 0;
+    border-width: 0;
+}
+#pbLvyU0uPfXAhafy8AeHGJ7Qp989yAUZ > .row .container {
+    display: block;
+    font-family: arial;
+    font-size: 14px;
+    height: 960px;
+    position: relative;
+    width: 960px;
+}
 #bDXfEKndMiAwnpkblKFekpRaeTEkPRXI {
     display: block;
     height: 960px;
@@ -636,7 +664,7 @@ body {
     left: 15px;
     overflow: hidden;
     position: absolute;
-    top: 846px;
+    top: 646px;
     width: 150px;
     z-index: 100011;
 }
